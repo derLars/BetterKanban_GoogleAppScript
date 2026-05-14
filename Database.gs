@@ -1,14 +1,14 @@
 // ============================================================
-// Database.gs — Script Properties read/write, backup logic,
+// Database.gs -- Script Properties read/write, backup logic,
 //               config loading, deterministic ID computation,
-//               short↔full key translation, cache management
+//               short<->full key translation, cache management
 // ============================================================
 
 // -------------------------------------------------------
-// Short↔Full Key Translation Maps
+// Short<->Full Key Translation Maps
 // -------------------------------------------------------
 // All entities stored in Script Properties use short keys
-// (1–4 chars) to save space. Client receives full keys.
+// (1-4 chars) to save space. Client receives full keys.
 // -------------------------------------------------------
 
 var TASK_SHORT_TO_FULL = {
@@ -43,7 +43,7 @@ var COMMENT_SHORT_TO_FULL = {
   txt: 'text'
 };
 
-// Inverted maps (full → short)
+// Inverted maps (full -> short)
 var TASK_FULL_TO_SHORT       = invertMapping(TASK_SHORT_TO_FULL);
 var USER_FULL_TO_SHORT       = invertMapping(USER_SHORT_TO_FULL);
 var SETTINGS_FULL_TO_SHORT   = invertMapping(SETTINGS_SHORT_TO_FULL);
@@ -239,13 +239,18 @@ function incrementDbVersion() {
 }
 
 // -------------------------------------------------------
-// Config Loading (merged: Config.json + configOverlay)
+// Config Loading (from Google Drive file)
+// -------------------------------------------------------
+// Config.json is stored as a physical file on Google Drive.
+// The file ID is stored in Script Properties key 'configFileId'.
+// Admins can edit the file directly on Drive or via the admin panel.
+// If no file ID is set, hardcoded defaults are used.
 // -------------------------------------------------------
 
 var _activeConfig = null;
 
-function loadConfig() {
-  var base = {
+function getDefaultConfig() {
+  return {
     app: { title: 'BetterKanban', timeZone: 'America/New_York', dateFormat: 'YYYY-MM-DD' },
     kanban: {
       columns: [
@@ -261,35 +266,53 @@ function loadConfig() {
     },
     ui: { theme: 'light', pageSize: 50, pollingIntervalSeconds: 10 }
   };
+}
 
+function readConfigFromDrive(fileId) {
   try {
-    var files = ScriptApp.getProject().getFiles();
-    while (files.hasNext()) {
-      var file = files.next();
-      if (file.getName() === 'Config.json') {
-        var parsed = JSON.parse(file.getContent());
-        Object.keys(parsed).forEach(function(k) { base[k] = parsed[k]; });
-        break;
-      }
-    }
-  } catch (e) {}
+    var file = DriveApp.getFileById(fileId);
+    var content = file.getBlob().getDataAsString();
+    return JSON.parse(content);
+  } catch (e) {
+    return null;
+  }
+}
 
-  var overlay = PropertiesService.getScriptProperties().getProperty('configOverlay');
-  if (overlay) {
-    try {
-      var overlayObj = JSON.parse(overlay);
+function writeConfigToDrive(fileId, configObj) {
+  try {
+    var file = DriveApp.getFileById(fileId);
+    file.setContent(JSON.stringify(configObj, null, 2));
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function getConfigFileId() {
+  return PropertiesService.getScriptProperties().getProperty('configFileId') || '';
+}
+
+function setConfigFileId(fileId) {
+  PropertiesService.getScriptProperties().setProperty('configFileId', fileId);
+}
+
+function loadConfig() {
+  var cfg = getDefaultConfig();
+  var fileId = getConfigFileId();
+  if (fileId) {
+    var driveCfg = readConfigFromDrive(fileId);
+    if (driveCfg) {
       ['app', 'kanban', 'database', 'ui'].forEach(function(section) {
-        if (overlayObj[section]) {
-          Object.keys(overlayObj[section]).forEach(function(k) {
-            base[section][k] = overlayObj[section][k];
+        if (driveCfg[section]) {
+          Object.keys(driveCfg[section]).forEach(function(k) {
+            cfg[section][k] = driveCfg[section][k];
           });
         }
       });
-    } catch (e) {}
+    }
   }
-
-  _activeConfig = base;
-  return base;
+  _activeConfig = cfg;
+  return cfg;
 }
 
 function getActiveConfig() {
@@ -455,7 +478,7 @@ function writeDumpSheet(spreadsheetId, sheetName, headers, data) {
 
 function estimateDatabaseSize() {
   var sp = PropertiesService.getScriptProperties();
-  var keys = ['db_users', 'db_tasks', 'db_activities', 'db_meta', 'configOverlay', 'admin'];
+  var keys = ['db_users', 'db_tasks', 'db_activities', 'db_meta', 'admin'];
   var total = 0;
   keys.forEach(function(k) {
     var v = sp.getProperty(k);

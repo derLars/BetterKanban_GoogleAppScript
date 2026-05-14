@@ -59,12 +59,11 @@ BetterKanban_GoogleAppScript/
 
 ## Configuration
 
-Configuration is merged at runtime from two sources:
+Configuration is stored as a physical JSON file on Google Drive.
 
-| Source | Priority | Editable by |
+| Source | Location | Editable by |
 |---|---|---|
-| `Config.json` (project file) | Base | Developer (via GAS editor) |
-| `configOverlay` (Script Properties) | Overrides base | Admin (via Admin page) |
+| `Config.json` | Google Drive file (ID set in Admin page) | Admin (via Admin page or directly on Drive) |
 
 ### Default Config
 

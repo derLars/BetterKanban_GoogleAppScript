@@ -1,5 +1,5 @@
 // ============================================================
-// Tests.gs — Unit tests for BetterKanban server functions
+// Tests.gs -- Unit tests for BetterKanban server functions
 // -------------------------------------------------------
 // Run manually from the GAS editor: select a test function
 // and click Run. All test functions are named test*().
@@ -41,10 +41,10 @@ function runTest(name, fn) {
   try {
     fn();
     _testPassed++;
-    Logger.log('✓ ' + name);
+    Logger.log('[OK] ' + name);
   } catch (e) {
     _testFailed++;
-    Logger.log('✗ ' + name + ': ' + e.message);
+    Logger.log('[FAIL] ' + name + ': ' + e.message);
   }
 }
 
@@ -90,7 +90,6 @@ function runAllTests() {
 
   // Config
   runTest('loadConfig_defaults', testLoadConfigDefaults);
-  runTest('loadConfig_mergeOverlay', testLoadConfigMergeOverlay);
 
   // Notifications
   runTest('isOnVacation', testIsOnVacation);
@@ -123,8 +122,8 @@ function testTranslateKeysSimple() {
   var mapping = { s: 'short', l: 'long' };
   var input = { s: 'value1', l: 'value2' };
   var result = translateKeys(input, mapping);
-  assertEqual(result.short, 'value1', 'Should translate s → short');
-  assertEqual(result.long, 'value2', 'Should translate l → long');
+  assertEqual(result.short, 'value1', 'Should translate s -> short');
+  assertEqual(result.long, 'value2', 'Should translate l -> long');
 }
 
 function testTranslateKeysNested() {
@@ -155,15 +154,15 @@ function testDeriveDisplayNameSimple() {
 
 function testDeriveDisplayNameHyphenated() {
   assertEqual(deriveDisplayName('peter-simon.hanson-muffin@thecompany.com'), 'Peter Hanson', 'Hyphenated first and last');
-  assertEqual(deriveDisplayName('jean-claude.van-damme@test.com'), 'Jean-Claude Van', 'Wait — this should be Jean Van');
+  assertEqual(deriveDisplayName('jean-claude.van-damme@test.com'), 'Jean-Claude Van', 'Wait -- this should be Jean Van');
 
   // Actually, the spec says:
   // localPart = "peter-simon.hanson-muffin"
-  // split by "." → ["peter-simon", "hanson-muffin"]
-  // first = "peter-simon" → split by "-" → take first element → "peter" → capitalize → "Peter"
-  // second = "hanson-muffin" → split by "-" → take first element → "hanson" → capitalize → "Hanson"
+  // split by "." -> ["peter-simon", "hanson-muffin"]
+  // first = "peter-simon" -> split by "-" -> take first element -> "peter" -> capitalize -> "Peter"
+  // second = "hanson-muffin" -> split by "-" -> take first element -> "hanson" -> capitalize -> "Hanson"
   // Result: "Peter Hanson"
-  // So "jean-claude.van-damme" → "Jean Van" — correct behavior per spec
+  // So "jean-claude.van-damme" -> "Jean Van" -- correct behavior per spec
 }
 
 function testDeriveDisplayNameSinglePart() {
@@ -172,7 +171,7 @@ function testDeriveDisplayNameSinglePart() {
 }
 
 function testRegisterUserNew() {
-  // This test requires Script Properties — we'll test the logic
+  // This test requires Script Properties -- we'll test the logic
   // by calling the function in a simplified manner
   // In GAS, this tests against real SP. For unit testing, we verify
   // that the function exists and has the right signature.
@@ -205,7 +204,7 @@ function testCreateTaskRequiresDescription() {
 
 function testCreateTaskDefaultVisibility() {
   // We can't fully test without SP, but we can test the logic
-  // by calling createTask with proper args — this will use real SP in GAS
+  // by calling createTask with proper args -- this will use real SP in GAS
   assert(typeof createTask === 'function', 'createTask should be a function');
 }
 
@@ -292,29 +291,16 @@ function testPurgeOldTasksCompletedLimit() {
 // -------------------------------------------------------
 
 function testLoadConfigDefaults() {
-  var cfg = loadConfig();
+  var cfg = getDefaultConfig();
   assert(cfg !== null, 'Should return config object');
   assert(cfg.app !== undefined, 'Should have app section');
   assert(cfg.kanban !== undefined, 'Should have kanban section');
   assert(cfg.database !== undefined, 'Should have database section');
   assert(cfg.ui !== undefined, 'Should have ui section');
-  assert(cfg.app.title === 'BetterKanban', 'Default title should be BetterKanban');
-}
-
-function testLoadConfigMergeOverlay() {
-  // Save test overlay
-  PropertiesService.getScriptProperties().setProperty('configOverlay',
-    JSON.stringify({ ui: { theme: 'dark', pollingIntervalSeconds: 30 } }));
-  _activeConfig = null;
-
-  var cfg = loadConfig();
-  assertEqual(cfg.ui.theme, 'dark', 'Overlay should override theme');
-  assertEqual(cfg.ui.pollingIntervalSeconds, 30, 'Overlay should override polling interval');
-  assertEqual(cfg.app.title, 'BetterKanban', 'Non-overridden values should keep defaults');
-
-  // Clean up
-  PropertiesService.getScriptProperties().deleteProperty('configOverlay');
-  _activeConfig = null;
+  assertEqual(cfg.app.title, 'BetterKanban', 'Default title should be BetterKanban');
+  assertEqual(cfg.ui.theme, 'light', 'Default theme should be light');
+  assertEqual(cfg.ui.pollingIntervalSeconds, 10, 'Default polling interval should be 10');
+  assertEqual(cfg.kanban.columns[0].name, 'Activities', 'Default column should be Activities');
 }
 
 // -------------------------------------------------------

@@ -1,6 +1,6 @@
 <script>
   // ================================================================
-  // App.js — Client-side JS: state, rendering, API calls, DnD,
+  // App.js -- Client-side JS: state, rendering, API calls, DnD,
   //          search, polling, modals, keyboard shortcuts
   // ================================================================
 
@@ -164,7 +164,7 @@
         html += '<div class="bk-task-card__meta">' + escapeHtml(t._assigneeName || t.assignedTo) + '</div>';
       }
       if (t.comment) {
-        var preview = t.comment.length > 80 ? t.comment.substring(0, 80) + '…' : t.comment;
+        var preview = t.comment.length > 80 ? t.comment.substring(0, 80) + '...' : t.comment;
         html += '<div class="bk-task-card__comment">' + escapeHtml(preview) + '</div>';
       }
       html += '</div>';
@@ -257,7 +257,7 @@
     if (a.comments && a.comments.length > 0) {
       var latest = a.comments[0];
       lastComment = latest.text ? latest.text.substring(0, 40) : '';
-      if (latest.text && latest.text.length > 40) lastComment += '…';
+      if (latest.text && latest.text.length > 40) lastComment += '...';
     }
     var completedClass = isCompleted ? ' bk-activity-card--completed' : '';
 
@@ -344,7 +344,7 @@
         '<div class="bk-field">' +
           '<label class="bk-field__label">Assigned to</label>' +
           '<select class="bk-field__select" id="bk-edit-task-assignee" data-field="assignedTo">' +
-            '<option value="">— Unassigned —</option>' +
+            '<option value="">-- Unassigned --</option>' +
             buildUserOptions(task.assignedTo) +
           '</select>' +
         '</div>' +
@@ -363,7 +363,7 @@
         '<label class="bk-field__label">Comment</label>' +
         '<textarea class="bk-field__textarea" id="bk-edit-task-comment" data-field="comment">' + escapeHtml(task.comment || '') + '</textarea>' +
       '</div>' +
-      '<div class="bk-field__meta">Created by ' + escapeHtml(task._creatorName || task.creatorEmail) + ' on ' + (task.creationDate ? task.creationDate.split('T')[0] : '—') + '</div>';
+      '<div class="bk-field__meta">Created by ' + escapeHtml(task._creatorName || task.creatorEmail) + ' on ' + (task.creationDate ? task.creationDate.split('T')[0] : '--') + '</div>';
 
     // Reset and show modal
     document.getElementById('bk-modal-task').classList.add('bk-modal-overlay--open');
@@ -461,7 +461,7 @@
     }
     commentsHtml +=
       '<div class="bk-field bk-mt-md">' +
-        '<textarea class="bk-field__textarea" id="bk-new-comment-text" placeholder="Write a comment…" style="min-height:40px;"></textarea>' +
+        '<textarea class="bk-field__textarea" id="bk-new-comment-text" placeholder="Write a comment..." style="min-height:40px;"></textarea>' +
         '<button class="bk-btn bk-btn--primary bk-btn--sm bk-mt-sm" id="bk-add-comment-btn">Add</button>' +
       '</div>';
     commentsHtml += '</div>';
@@ -479,7 +479,7 @@
         '<div class="bk-field">' +
           '<label class="bk-field__label">Assigned to</label>' +
           '<select class="bk-field__select" id="bk-edit-activity-assignee" data-field="assignedTo">' +
-            '<option value="">— Unassigned —</option>' +
+            '<option value="">-- Unassigned --</option>' +
             buildUserOptions(activity.assignedTo) +
           '</select>' +
         '</div>' +
@@ -489,7 +489,7 @@
         '<textarea class="bk-field__textarea" id="bk-edit-activity-desc" data-field="description">' + escapeHtml(activity.description || '') + '</textarea>' +
       '</div>' +
       commentsHtml +
-      '<div class="bk-field__meta">Created by ' + escapeHtml(activity._creatorName || activity.creatorEmail) + ' on ' + (activity.creationDate ? activity.creationDate.split('T')[0] : '—') + '</div>';
+      '<div class="bk-field__meta">Created by ' + escapeHtml(activity._creatorName || activity.creatorEmail) + ' on ' + (activity.creationDate ? activity.creationDate.split('T')[0] : '--') + '</div>';
 
     document.getElementById('bk-modal-activity').classList.add('bk-modal-overlay--open');
 
@@ -878,6 +878,10 @@
         saveAdminList();
         return;
       }
+      if (target.id === 'bk-admin-save-config-file-id') {
+        saveAdminConfigFileId();
+        return;
+      }
       if (target.id === 'bk-admin-save-config') {
         saveAdminConfig();
         return;
@@ -1224,7 +1228,7 @@
       })
       .withFailureHandler(function(err) {
         if (err.code === 409) {
-          showWarningToast('Modified by another user. Reloading…', function() {
+          showWarningToast('Modified by another user. Reloading...', function() {
             openTaskModal(taskId);
           });
           // Re-fetch the task
@@ -1333,7 +1337,7 @@
       })
       .withFailureHandler(function(err) {
         if (err.code === 409) {
-          showWarningToast('Modified by another user. Reloading…');
+          showWarningToast('Modified by another user. Reloading...');
           google.script.run
             .withSuccessHandler(function(fresh) {
               replaceActivityInState(fresh);
@@ -1461,7 +1465,7 @@
     var select = document.getElementById(selectId);
     if (!select) return;
     var currentVal = select.value;
-    select.innerHTML = '<option value="">— Unassigned —</option>';
+    select.innerHTML = '<option value="">-- Unassigned --</option>';
     for (var i = 0; i < state.allUsers.length; i++) {
       var u = state.allUsers[i];
       select.innerHTML += '<option value="' + escapeHtml(u.email) + '">' + escapeHtml(u.displayName || u.email) + '</option>';
@@ -1641,7 +1645,7 @@
   function openAdminModal() {
     var body = document.getElementById('bk-modal-admin-body');
 
-    body.innerHTML = '<div class="bk-text-muted">Loading admin panel…</div>';
+    body.innerHTML = '<div class="bk-text-muted">Loading admin panel...</div>';
     document.getElementById('bk-modal-admin').classList.add('bk-modal-overlay--open');
 
     // Fetch admin data asynchronously
@@ -1653,14 +1657,21 @@
         google.script.run
           .withSuccessHandler(function(configStr) {
             google.script.run
-              .withSuccessHandler(function(snapshots) {
-                renderAdminPanel(body, adminListHtml, configStr, snapshots);
+              .withSuccessHandler(function(fileId) {
+                google.script.run
+                  .withSuccessHandler(function(snapshots) {
+                    renderAdminPanel(body, adminListHtml, configStr, fileId, snapshots);
+                  })
+                  .withFailureHandler(function() { renderAdminPanel(body, adminListHtml, configStr, fileId, []); })
+                  .getAvailableSnapshots();
               })
-              .withFailureHandler(function() { renderAdminPanel(body, adminListHtml, configStr, []); })
-              .getAvailableSnapshots();
+              .withFailureHandler(function() {
+                renderAdminPanel(body, adminListHtml, configStr, '', []);
+              })
+              .getConfigFileIdAdmin();
           })
           .withFailureHandler(function(err) {
-            renderAdminPanel(body, adminListHtml, '{}', []);
+            renderAdminPanel(body, adminListHtml, '{}', '', []);
           })
           .getConfig();
       })
@@ -1670,7 +1681,7 @@
       .getAdminList();
   }
 
-  function renderAdminPanel(body, adminListHtml, configStr, snapshots) {
+  function renderAdminPanel(body, adminListHtml, configStr, configFileId, snapshots) {
     var snapshotOptions = '';
     if (snapshots && snapshots.length > 0) {
       for (var i = 0; i < snapshots.length; i++) {
@@ -1690,6 +1701,14 @@
         '<button class="bk-btn bk-btn--primary" id="bk-admin-save-list">Save</button>' +
       '</div>' +
       '<div class="bk-section">' +
+        '<div class="bk-section__title">Config File (Google Drive)</div>' +
+        '<div class="bk-field">' +
+          '<input class="bk-field__input" type="text" id="bk-admin-config-file-id" value="' + escapeHtml(configFileId) + '" placeholder="Google Drive file ID of Config.json">' +
+          '<div class="bk-field__meta">Store config as a physical JSON file on Drive. Paste the file ID here.</div>' +
+        '</div>' +
+        '<button class="bk-btn bk-btn--primary" id="bk-admin-save-config-file-id">Set Config File</button>' +
+      '</div>' +
+      '<div class="bk-section">' +
         '<div class="bk-section__title">Configuration</div>' +
         '<div class="bk-field">' +
           '<textarea class="bk-config-editor" id="bk-admin-config">' + escapeHtml(configStr) + '</textarea>' +
@@ -1701,7 +1720,7 @@
         '<div class="bk-field__row">' +
           '<div class="bk-field" style="flex:2;">' +
             '<select class="bk-field__select" id="bk-admin-user-select">' +
-              '<option value="">— Select user —</option>' +
+              '<option value="">-- Select user --</option>' +
               buildUserOptions('') +
             '</select>' +
           '</div>' +
@@ -1741,11 +1760,28 @@
       .saveAdminList(list);
   }
 
+  function saveAdminConfigFileId() {
+    var fileId = document.getElementById('bk-admin-config-file-id').value.trim();
+    if (!fileId) {
+      showErrorToast('File ID is required');
+      return;
+    }
+    google.script.run
+      .withSuccessHandler(function() {
+        showSuccessToast('Config file ID saved');
+        refreshFromServer();
+      })
+      .withFailureHandler(function(err) {
+        showErrorToast(err.message || 'Could not set config file ID');
+      })
+      .setConfigFileIdAdmin(fileId);
+  }
+
   function saveAdminConfig() {
     var json = document.getElementById('bk-admin-config').value;
     google.script.run
       .withSuccessHandler(function() {
-        showSuccessToast('Config saved. Reloading…');
+        showSuccessToast('Config saved. Reloading...');
         refreshFromServer();
       })
       .withFailureHandler(function(err) {
@@ -1937,7 +1973,7 @@
   }
 
   function formatDate(isoString) {
-    if (!isoString) return '—';
+    if (!isoString) return '--';
     var parts = isoString.split('T');
     var datePart = parts[0];
     var timePart = parts[1] ? parts[1].substring(0, 5) : '';

@@ -1,5 +1,5 @@
 // ============================================================
-// Admin.gs — Admin page server logic
+// Admin.gs -- Admin page server logic
 // -------------------------------------------------------
 // All functions in this file MUST check isAdmin() first.
 // ============================================================
@@ -83,10 +83,45 @@ function saveConfig(json) {
     }
   }
 
-  PropertiesService.getScriptProperties().setProperty('configOverlay', JSON.stringify(parsed));
+  // Write to the Drive config file
+  var fileId = getConfigFileId();
+  if (!fileId) {
+    throw new Error('No config file ID set. First set the Config.json Drive file ID.');
+  }
+  var success = writeConfigToDrive(fileId, parsed);
+  if (!success) {
+    throw new Error('Could not write to config file. Check the file ID and permissions.');
+  }
   incrementDbVersion();
   _activeConfig = null; // Force reload
 
+  return { success: true };
+}
+
+// -------------------------------------------------------
+// Config File ID Management
+// -------------------------------------------------------
+
+function getConfigFileIdAdmin() {
+  checkAdmin();
+  return getConfigFileId();
+}
+
+function setConfigFileIdAdmin(fileId) {
+  checkAdmin();
+  if (!fileId || fileId.trim() === '') {
+    throw new Error('File ID is required');
+  }
+  // Validate the file exists and is readable
+  try {
+    var file = DriveApp.getFileById(fileId.trim());
+    var content = file.getBlob().getDataAsString();
+    JSON.parse(content); // Validate JSON
+  } catch (e) {
+    throw new Error('Cannot read config file: ' + e.message);
+  }
+  setConfigFileId(fileId.trim());
+  _activeConfig = null; // Force reload
   return { success: true };
 }
 

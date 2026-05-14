@@ -1,5 +1,5 @@
 // ============================================================
-// Triggers.gs — Installable time-driven trigger management
+// Triggers.gs -- Installable time-driven trigger management
 // -------------------------------------------------------
 // Run setupDailyTriggers() once from the GAS script editor
 // after first deploy to install all triggers.
@@ -78,7 +78,7 @@ function keepWarm() {
   try {
     CacheService.getScriptCache().get('dbVersion');
   } catch (e) {
-    // Silently ignore — this is just a keep-warm ping
+    // Silently ignore -- this is just a keep-warm ping
   }
 }
 

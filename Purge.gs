@@ -1,5 +1,5 @@
 // ============================================================
-// Purge.gs — Scheduled cleanup of old tasks & activities
+// Purge.gs -- Scheduled cleanup of old tasks & activities
 // -------------------------------------------------------
 // Called by daily time-driven trigger AND by purgeIfNeeded()
 // when Script Properties size exceeds 400 KB.

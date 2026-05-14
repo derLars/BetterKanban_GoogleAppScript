@@ -1,5 +1,5 @@
 // ============================================================
-// Main.gs — doGet(), session handling, include() helper,
+// Main.gs -- doGet(), session handling, include() helper,
 //           getInitialData(), getCurrentUser(), poll()
 // ============================================================
 
@@ -15,7 +15,7 @@ function doGet() {
   } catch (e) {
     return HtmlService.createHtmlOutput('<html><body><h1>Access Denied</h1><p>' +
       e.message + '</p></body></html>')
-      .setTitle('BetterKanban — Error');
+      .setTitle('BetterKanban -- Error');
   }
 
   var cfg = getActiveConfig();

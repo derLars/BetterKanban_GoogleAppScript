@@ -1,9 +1,9 @@
 // ============================================================
-// Tasks.gs — Task CRUD, lifecycle operations, purge
+// Tasks.gs -- Task CRUD, lifecycle operations, purge
 // ============================================================
 
 // -------------------------------------------------------
-// Allowed fields for partial updates (per §4.6.5)
+// Allowed fields for partial updates (per S4.6.5)
 // -------------------------------------------------------
 var TASK_ALLOWED_UPDATE_FIELDS = ['description', 'dueDate', 'assignedTo', 'visibility', 'comment'];
 
@@ -113,7 +113,7 @@ function updateTask(taskId, changes) {
 
   var email = Session.getActiveUser().getEmail();
 
-  // Field-level merge — only apply allowed fields
+  // Field-level merge -- only apply allowed fields
   TASK_ALLOWED_UPDATE_FIELDS.forEach(function(field) {
     if (changes[field] !== undefined) {
       // Visibility change guard

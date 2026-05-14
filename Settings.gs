@@ -1,5 +1,5 @@
 // ============================================================
-// Settings.gs — User settings: profile, webhook, vacations,
+// Settings.gs -- User settings: profile, webhook, vacations,
 //               import from spreadsheet, export to spreadsheet
 // ============================================================
 
@@ -71,13 +71,13 @@ function importFromSpreadsheet(sheetId) {
   try {
     tasksRaw = readDumpSheet(sheetId, '_Dump_Tasks');
   } catch (e) {
-    // May not exist — that's ok
+    // May not exist -- that's ok
   }
 
   try {
     activitiesRaw = readDumpSheet(sheetId, '_Dump_Activities');
   } catch (e) {
-    // May not exist — that's ok
+    // May not exist -- that's ok
   }
 
   if (tasksRaw.length === 0 && activitiesRaw.length === 0) {

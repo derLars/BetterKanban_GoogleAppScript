@@ -1,5 +1,5 @@
 // ============================================================
-// Notifications.gs — Chat webhook dispatch, daily summary,
+// Notifications.gs -- Chat webhook dispatch, daily summary,
 //                    vacation suppression
 // ============================================================
 
@@ -52,7 +52,7 @@ function isOnVacation(user, dateStr) {
 
 function buildSummary(user, tasks, activities, today, timeZone) {
   var lines = [];
-  lines.push('**BetterKanban — Daily Summary for ' + user.displayName + '**');
+  lines.push('**BetterKanban -- Daily Summary for ' + user.displayName + '**');
   lines.push('');
 
   // Tasks assigned to user that are not completed
@@ -63,7 +63,7 @@ function buildSummary(user, tasks, activities, today, timeZone) {
   if (myOpenTasks.length > 0) {
     lines.push('*Open Tasks (' + myOpenTasks.length + '):*');
     myOpenTasks.forEach(function(t) {
-      lines.push('  • ' + t.description);
+      lines.push('  * ' + t.description);
     });
     lines.push('');
   }
@@ -85,7 +85,7 @@ function buildSummary(user, tasks, activities, today, timeZone) {
   if (dueTodayTasks.length > 0) {
     lines.push('*Due Today:*');
     dueTodayTasks.forEach(function(t) {
-      lines.push('  • ' + t.description + (t.assignedTo ? ' (assigned to ' + getDisplayName(t.assignedTo) + ')' : ''));
+      lines.push('  * ' + t.description + (t.assignedTo ? ' (assigned to ' + getDisplayName(t.assignedTo) + ')' : ''));
     });
     lines.push('');
   }
@@ -93,8 +93,8 @@ function buildSummary(user, tasks, activities, today, timeZone) {
   if (overdueTasks.length > 0) {
     lines.push('*Overdue:*');
     overdueTasks.forEach(function(t) {
-      lines.push('  • ' + t.description + ' (due ' + t.dueDate.split('T')[0] + ')' +
-        (t.assignedTo ? ' — ' + getDisplayName(t.assignedTo) : ''));
+      lines.push('  * ' + t.description + ' (due ' + t.dueDate.split('T')[0] + ')' +
+        (t.assignedTo ? ' -- ' + getDisplayName(t.assignedTo) : ''));
     });
     lines.push('');
   }
@@ -112,7 +112,7 @@ function buildSummary(user, tasks, activities, today, timeZone) {
       cfg.kanban.columns.forEach(function(c) {
         if (c.id === a.columnId) colName = c.name;
       });
-      lines.push('  • ' + a.title + ' [' + colName + ']');
+      lines.push('  * ' + a.title + ' [' + colName + ']');
     });
     lines.push('');
   }

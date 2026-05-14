@@ -1,10 +1,10 @@
 // ============================================================
-// Activities.gs — Activity CRUD, column movement,
+// Activities.gs -- Activity CRUD, column movement,
 //                 comment operations, purge
 // ============================================================
 
 // -------------------------------------------------------
-// Allowed fields for partial updates (per §4.6.5)
+// Allowed fields for partial updates (per S4.6.5)
 // -------------------------------------------------------
 var ACTIVITY_ALLOWED_UPDATE_FIELDS = ['title', 'description', 'dueDate', 'assignedTo'];
 

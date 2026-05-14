@@ -18,7 +18,7 @@
       <div class="bk-topbar__user" id="bk-user-menu">
         <div class="bk-topbar__avatar" id="bk-avatar">U</div>
         <span id="bk-user-name">User</span>
-        <span>▼</span>
+        <span>></span>
         <div class="bk-user-dropdown" id="bk-user-dropdown">
           <button class="bk-user-dropdown__item" data-action="settings">Settings</button>
           <button class="bk-user-dropdown__item" data-action="close-session">Close session</button>
@@ -28,12 +28,12 @@
 
     <!-- Welcome Bar -->
     <div id="bk-welcome" class="bk-welcome">
-      <span>Welcome back, <span class="bk-welcome__name" id="bk-welcome-name">—</span></span>
+      <span>Welcome back, <span class="bk-welcome__name" id="bk-welcome-name">--</span></span>
       <div class="bk-welcome__counters" id="bk-welcome-counters"></div>
     </div>
 
     <!-- Error Banner -->
-    <div class="bk-error-banner" id="bk-error-banner">Connection error. Retrying…</div>
+    <div class="bk-error-banner" id="bk-error-banner">Connection error. Retrying...</div>
 
     <!-- Main Content -->
     <div class="bk-main">
@@ -41,7 +41,7 @@
       <div class="bk-pane" id="bk-pane-tasks">
         <div class="bk-pane__header">
           <span class="bk-pane__title">Tasks</span>
-          <input class="bk-pane__search" type="text" placeholder="Search tasks…" id="bk-search-tasks">
+          <input class="bk-pane__search" type="text" placeholder="Search tasks..." id="bk-search-tasks">
           <button class="bk-pane__toggle" id="bk-toggle-tasks">&lt; Hide</button>
           <button class="bk-pane__add" id="bk-add-task" title="New Task">+</button>
         </div>
@@ -63,7 +63,7 @@
       <div class="bk-pane" id="bk-pane-activities">
         <div class="bk-pane__header">
           <span class="bk-pane__title">Activities</span>
-          <input class="bk-pane__search" type="text" placeholder="Search activities…" id="bk-search-activities">
+          <input class="bk-pane__search" type="text" placeholder="Search activities..." id="bk-search-activities">
           <button class="bk-pane__toggle" id="bk-toggle-activities">&lt; Hide</button>
           <button class="bk-pane__add" id="bk-add-activity" title="New Activity">+</button>
         </div>
@@ -163,7 +163,7 @@
         </div>
         <div class="bk-field">
           <label class="bk-field__label">Assigned to</label>
-          <select class="bk-field__select" id="bk-new-task-assignee"><option value="">— Unassigned —</option></select>
+          <select class="bk-field__select" id="bk-new-task-assignee"><option value="">-- Unassigned --</option></select>
         </div>
         <div class="bk-field">
           <label class="bk-field__label">Visibility</label>
@@ -206,7 +206,7 @@
         </div>
         <div class="bk-field">
           <label class="bk-field__label">Assigned to</label>
-          <select class="bk-field__select" id="bk-new-activity-assignee"><option value="">— Unassigned —</option></select>
+          <select class="bk-field__select" id="bk-new-activity-assignee"><option value="">-- Unassigned --</option></select>
         </div>
       </div>
       <div class="bk-modal__actions">

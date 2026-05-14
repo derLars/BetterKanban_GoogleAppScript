@@ -1,19 +1,19 @@
 // ============================================================
-// Users.gs — User registration, lookup, admin check,
+// Users.gs -- User registration, lookup, admin check,
 //            display name derivation, settings update
 // ============================================================
 
 // -------------------------------------------------------
 // Display Name Derivation from Email
 // -------------------------------------------------------
-// Email local part  →  split by "."   →  first segment = first name
-//                                       →  second segment = last name
+// Email local part  ->  split by "."   ->  first segment = first name
+//                                       ->  second segment = last name
 //   each segment split by "-", take first element, capitalize first letter.
 //
 // Examples:
-//   peter-simon.hanson-muffin  →  "Peter Hanson"
-//   klaus.jansen               →  "Klaus Jansen"
-//   marie.curie-sklodowska     →  "Marie Curie"
+//   peter-simon.hanson-muffin  ->  "Peter Hanson"
+//   klaus.jansen               ->  "Klaus Jansen"
+//   marie.curie-sklodowska     ->  "Marie Curie"
 // -------------------------------------------------------
 
 function deriveDisplayName(email) {
