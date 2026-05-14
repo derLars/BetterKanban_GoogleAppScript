@@ -42,12 +42,12 @@
         <div class="bk-pane__header">
           <span class="bk-pane__title">Tasks</span>
           <input class="bk-pane__search" type="text" placeholder="Search tasks…" id="bk-search-tasks">
-          <button class="bk-pane__toggle" id="bk-toggle-tasks">◀ Hide</button>
+          <button class="bk-pane__toggle" id="bk-toggle-tasks">&lt; Hide</button>
           <button class="bk-pane__add" id="bk-add-task" title="New Task">+</button>
         </div>
         <div class="bk-pane__filters">
-          <button class="bk-pane__filter-btn" data-filter="completed-tasks">☐ Show completed</button>
-          <button class="bk-pane__filter-btn" data-filter="deleted-tasks">☐ Show deleted</button>
+          <button class="bk-pane__filter-btn" data-filter="completed-tasks">Show completed</button>
+          <button class="bk-pane__filter-btn" data-filter="deleted-tasks">Show deleted</button>
         </div>
         <div class="bk-pane__body" id="bk-tasks-body">
           <!-- Skeleton -->
@@ -64,12 +64,12 @@
         <div class="bk-pane__header">
           <span class="bk-pane__title">Activities</span>
           <input class="bk-pane__search" type="text" placeholder="Search activities…" id="bk-search-activities">
-          <button class="bk-pane__toggle" id="bk-toggle-activities">◀ Hide</button>
+          <button class="bk-pane__toggle" id="bk-toggle-activities">&lt; Hide</button>
           <button class="bk-pane__add" id="bk-add-activity" title="New Activity">+</button>
         </div>
         <div class="bk-pane__filters">
-          <button class="bk-pane__filter-btn" data-filter="completed-activities">☐ Show completed</button>
-          <button class="bk-pane__filter-btn" data-filter="deleted-activities">☐ Show deleted</button>
+          <button class="bk-pane__filter-btn" data-filter="completed-activities">Show completed</button>
+          <button class="bk-pane__filter-btn" data-filter="deleted-activities">Show deleted</button>
         </div>
         <div class="bk-pane__body" id="bk-activities-body">
           <!-- Skeleton -->
@@ -96,7 +96,7 @@
     <div class="bk-modal bk-modal--task">
       <div class="bk-modal__header">
         <span class="bk-modal__title">Edit Task</span>
-        <button class="bk-modal__close" data-close-modal>✕</button>
+        <button class="bk-modal__close" data-close-modal>X</button>
       </div>
       <div class="bk-modal__body" id="bk-modal-task-body">
         <!-- Populated by JS -->
@@ -110,7 +110,7 @@
     <div class="bk-modal bk-modal--activity">
       <div class="bk-modal__header">
         <span class="bk-modal__title">Edit Activity</span>
-        <button class="bk-modal__close" data-close-modal>✕</button>
+        <button class="bk-modal__close" data-close-modal>X</button>
       </div>
       <div class="bk-modal__body" id="bk-modal-activity-body">
         <!-- Populated by JS -->
@@ -124,7 +124,7 @@
     <div class="bk-modal bk-modal--settings">
       <div class="bk-modal__header">
         <span class="bk-modal__title">Settings</span>
-        <button class="bk-modal__close" data-close-modal>✕</button>
+        <button class="bk-modal__close" data-close-modal>X</button>
       </div>
       <div class="bk-modal__body" id="bk-modal-settings-body">
         <!-- Populated by JS -->
@@ -137,7 +137,7 @@
     <div class="bk-modal bk-modal--admin">
       <div class="bk-modal__header">
         <span class="bk-modal__title">Admin</span>
-        <button class="bk-modal__close" data-close-modal>✕</button>
+        <button class="bk-modal__close" data-close-modal>X</button>
       </div>
       <div class="bk-modal__body" id="bk-modal-admin-body">
         <!-- Populated by JS -->
@@ -150,7 +150,7 @@
     <div class="bk-modal bk-modal--task">
       <div class="bk-modal__header">
         <span class="bk-modal__title">New Task</span>
-        <button class="bk-modal__close" data-close-modal>✕</button>
+        <button class="bk-modal__close" data-close-modal>X</button>
       </div>
       <div class="bk-modal__body" id="bk-modal-new-task-body">
         <div class="bk-field">
@@ -168,8 +168,8 @@
         <div class="bk-field">
           <label class="bk-field__label">Visibility</label>
           <select class="bk-field__select" id="bk-new-task-visibility">
-            <option value="private">🔒 Private</option>
-            <option value="public">🔓 Public</option>
+            <option value="private">Private</option>
+            <option value="public">Public</option>
           </select>
         </div>
         <div class="bk-field">
@@ -189,7 +189,7 @@
     <div class="bk-modal bk-modal--activity">
       <div class="bk-modal__header">
         <span class="bk-modal__title">New Activity</span>
-        <button class="bk-modal__close" data-close-modal>✕</button>
+        <button class="bk-modal__close" data-close-modal>X</button>
       </div>
       <div class="bk-modal__body" id="bk-modal-new-activity-body">
         <div class="bk-field">

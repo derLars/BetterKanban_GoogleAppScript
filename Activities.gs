@@ -32,9 +32,9 @@ function createActivity(data) {
   var cfg = getActiveConfig();
   var now = new Date().toISOString();
   var id = generateUUID();
-  var defaultColumnId = (cfg.kanban.columns && cfg.kanban.columns.length > 0)
-    ? cfg.kanban.columns[0].id
-    : 'col-default';
+  var defaultColumnName = (cfg.kanban.columns && cfg.kanban.columns.length > 0)
+    ? cfg.kanban.columns[0].name
+    : 'Activities';
 
   var activity = {
     id: id,
@@ -45,7 +45,7 @@ function createActivity(data) {
     creationDate: now,
     dueDate: data.dueDate || null,
     assignedTo: data.assignedTo || null,
-    columnId: data.columnId || defaultColumnId,
+    columnId: data.columnId || defaultColumnName,
     columnOrder: 0,
     comments: [],
     version: 1,
@@ -206,7 +206,7 @@ function uncompleteActivity(id) {
   // Move to first column
   var cfg = getActiveConfig();
   if (cfg.kanban.columns && cfg.kanban.columns.length > 0) {
-    activity.columnId = cfg.kanban.columns[0].id;
+    activity.columnId = cfg.kanban.columns[0].name;
   }
   activity.columnOrder = 0;
 

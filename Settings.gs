@@ -145,10 +145,10 @@ function importFromSpreadsheet(sheetId) {
     }
 
     // Determine target column by columnNumber (1-indexed)
-    var targetColumnId = (columns.length > 0) ? columns[0].id : 'col-default';
+    var targetColumnId = (columns.length > 0) ? columns[0].name : 'Activities';
     var colNumber = parseInt(row.columnNumber, 10);
     if (!isNaN(colNumber) && colNumber >= 1 && colNumber <= columns.length) {
-      targetColumnId = columns[colNumber - 1].id;
+      targetColumnId = columns[colNumber - 1].name;
     }
 
     var comments = [];

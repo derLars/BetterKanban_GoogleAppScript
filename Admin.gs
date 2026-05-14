@@ -270,13 +270,11 @@ function importSnapshot(date, mode) {
       return;
     }
 
-    // Determine target column
-    var targetColumnId = 'col-default';
+    // Determine target column (by 1-indexed position)
+    var targetColumnId = (columns.length > 0) ? columns[0].name : 'Activities';
     var colNumber = parseInt(row.columnNumber, 10);
     if (!isNaN(colNumber) && colNumber >= 1 && colNumber <= columns.length) {
-      targetColumnId = columns[colNumber - 1].id;
-    } else if (columns.length > 0) {
-      targetColumnId = columns[0].id;
+      targetColumnId = columns[colNumber - 1].name;
     }
 
     var comments = [];
@@ -309,20 +307,20 @@ function importSnapshot(date, mode) {
   });
 
   // Renumber columnOrder across all columns after import
-  var columnIds = {};
-  columns.forEach(function(c) { columnIds[c.id] = true; });
+  var columnNames = {};
+  columns.forEach(function(c) { columnNames[c.name] = true; });
 
   // Fix activities without a valid column
   activities.forEach(function(a) {
-    if (!columnIds[a.columnId] && columns.length > 0) {
-      a.columnId = columns[0].id;
+    if (!columnNames[a.columnId] && columns.length > 0) {
+      a.columnId = columns[0].name;
     }
   });
 
   // Renumber each column
   columns.forEach(function(col) {
     var colCards = activities.filter(function(a) {
-      return a.columnId === col.id;
+      return a.columnId === col.name;
     }).sort(function(a, b) { return a.columnOrder - b.columnOrder; });
     colCards.forEach(function(card, idx) {
       for (var ci = 0; ci < activities.length; ci++) {

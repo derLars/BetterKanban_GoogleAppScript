@@ -43,10 +43,6 @@ var COMMENT_SHORT_TO_FULL = {
   txt: 'text'
 };
 
-var COLUMN_SHORT_TO_FULL = {
-  i: 'id', n: 'name', o: 'order'
-};
-
 // Inverted maps (full → short)
 var TASK_FULL_TO_SHORT       = invertMapping(TASK_SHORT_TO_FULL);
 var USER_FULL_TO_SHORT       = invertMapping(USER_SHORT_TO_FULL);
@@ -54,7 +50,6 @@ var SETTINGS_FULL_TO_SHORT   = invertMapping(SETTINGS_SHORT_TO_FULL);
 var VACATION_FULL_TO_SHORT   = invertMapping(VACATION_SHORT_TO_FULL);
 var ACTIVITY_FULL_TO_SHORT   = invertMapping(ACTIVITY_SHORT_TO_FULL);
 var COMMENT_FULL_TO_SHORT    = invertMapping(COMMENT_SHORT_TO_FULL);
-var COLUMN_FULL_TO_SHORT     = invertMapping(COLUMN_SHORT_TO_FULL);
 
 function invertMapping(m) {
   var r = {};
@@ -141,13 +136,6 @@ function translateActivityForStorage(activity) {
   return a;
 }
 
-function translateColumnsForClient(columns) {
-  return columns.map(function(c) { return translateKeys(c, COLUMN_SHORT_TO_FULL); });
-}
-
-function translateColumnsForStorage(columns) {
-  return columns.map(function(c) { return translateKeys(c, COLUMN_FULL_TO_SHORT); });
-}
 
 // -------------------------------------------------------
 // Core Database Operations
@@ -261,7 +249,7 @@ function loadConfig() {
     app: { title: 'BetterKanban', timeZone: 'America/New_York', dateFormat: 'YYYY-MM-DD' },
     kanban: {
       columns: [
-        { id: 'col-default', name: 'Activities', order: 0 }
+        { name: 'Activities', order: 0 }
       ],
       completedColumnId: null
     },

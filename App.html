@@ -139,7 +139,7 @@
     if (tasks.length === 0) {
       body.innerHTML =
         '<div class="bk-empty">' +
-          '<div class="bk-empty__icon">📋</div>' +
+          '<div class="bk-empty__icon">[ ]</div>' +
           '<div class="bk-empty__msg">No tasks yet</div>' +
           '<div class="bk-empty__sub">Create your first task to get started.</div>' +
         '</div>';
@@ -158,14 +158,14 @@
       html += '<div class="bk-task-card__row">';
       html += '<div class="bk-task-card__checkbox' + checkedClass + '" data-action="toggle-complete" data-task-id="' + escapeHtml(t.id) + '"></div>';
       html += '<span class="bk-task-card__desc">' + escapeHtml(t.description || '') + '</span>';
-      html += '<span class="bk-task-card__badge bk-task-card__badge--' + (isPublic ? 'public' : 'private') + '">' + (isPublic ? '🔓' : '🔒') + '</span>';
+      html += '<span class="bk-task-card__badge bk-task-card__badge--' + (isPublic ? 'public' : 'private') + '">' + (isPublic ? 'Public' : 'Private') + '</span>';
       html += '</div>';
       if (t.assignedTo) {
-        html += '<div class="bk-task-card__meta">👤 ' + escapeHtml(t._assigneeName || t.assignedTo) + '</div>';
+        html += '<div class="bk-task-card__meta">' + escapeHtml(t._assigneeName || t.assignedTo) + '</div>';
       }
       if (t.comment) {
         var preview = t.comment.length > 80 ? t.comment.substring(0, 80) + '…' : t.comment;
-        html += '<div class="bk-task-card__comment">💬 ' + escapeHtml(preview) + '</div>';
+        html += '<div class="bk-task-card__comment">' + escapeHtml(preview) + '</div>';
       }
       html += '</div>';
     }
@@ -203,7 +203,7 @@
   function renderKanban() {
     var body = document.getElementById('bk-activities-body');
     var activities = filterActivities();
-    var columns = state.columns && state.columns.length > 0 ? state.columns : [{ id: 'col-default', name: 'Activities', order: 0 }];
+    var columns = state.columns && state.columns.length > 0 ? state.columns : [{ name: 'Activities', order: 0 }];
 
     if (activities.length === 0 && columns.length > 0) {
       var hasAnyInColumn = {};
@@ -212,7 +212,7 @@
       if (state.activities.filter(function(a) { return !a.deletedDate; }).length === 0) {
         body.innerHTML =
           '<div class="bk-empty">' +
-            '<div class="bk-empty__icon">📊</div>' +
+            '<div class="bk-empty__icon">[ ]</div>' +
             '<div class="bk-empty__msg">No activities yet</div>' +
             '<div class="bk-empty__sub">Add an activity card to start your Kanban board.</div>' +
           '</div>';
@@ -223,24 +223,19 @@
     var html = '<div class="bk-kanban">';
     for (var ci = 0; ci < columns.length; ci++) {
       var col = columns[ci];
-      var colActivities = activities.filter(function(a) { return a.columnId === col.id; })
+      var colActivities = activities.filter(function(a) { return a.columnId === col.name; })
         .sort(function(a, b) { return (a.columnOrder || 0) - (b.columnOrder || 0); });
 
-      html += '<div class="bk-column" data-column-id="' + escapeHtml(col.id) + '">';
+      html += '<div class="bk-column" data-column-id="' + escapeHtml(col.name) + '">';
       html += '<div class="bk-column__header">';
       html += '<span class="bk-column__name">' + escapeHtml(col.name || '') + '</span>';
       html += '<span class="bk-column__count">' + colActivities.length + '</span>';
       html += '</div>';
-      html += '<div class="bk-column__body" data-column-id="' + escapeHtml(col.id) + '">';
-
-      // Drop zone at top
-      html += '<div class="bk-column__drop-zone" data-drop-index="0" data-column-id="' + escapeHtml(col.id) + '"></div>';
+      html += '<div class="bk-column__body" data-column-id="' + escapeHtml(col.name) + '">';
 
       for (var ai = 0; ai < colActivities.length; ai++) {
         var a = colActivities[ai];
         html += renderActivityCard(a);
-        // Drop zone after each card
-        html += '<div class="bk-column__drop-zone" data-drop-index="' + (ai + 1) + '" data-column-id="' + escapeHtml(col.id) + '"></div>';
       }
 
       html += '</div>'; // column__body
@@ -273,15 +268,15 @@
     }
     html += '<div class="bk-activity-card__footer">';
     if (a.dueDate) {
-      html += '<span class="bk-activity-card__due' + dueClass + '">📅 ' + escapeHtml(a.dueDate.split('T')[0]) + '</span>';
+      html += '<span class="bk-activity-card__due' + dueClass + '">' + escapeHtml(a.dueDate.split('T')[0]) + '</span>';
     }
     if (a.assignedTo) {
       // Use first name only for card display
       var firstName = a._assigneeName ? a._assigneeName.split(' ')[0] : a.assignedTo;
-      html += '<span class="bk-activity-card__assignee">👤 ' + escapeHtml(firstName) + '</span>';
+      html += '<span class="bk-activity-card__assignee">' + escapeHtml(firstName) + '</span>';
     }
     if (lastComment) {
-      html += '<span class="bk-activity-card__comment-preview">💬 "' + escapeHtml(lastComment) + '"</span>';
+      html += '<span class="bk-activity-card__comment-preview">"' + escapeHtml(lastComment) + '"</span>';
     }
     html += '</div>';
     html += '</div>';
@@ -358,8 +353,8 @@
         '<label class="bk-field__label">Visibility</label>' +
         '<div>' +
           '<select class="bk-field__select" id="bk-edit-task-visibility" data-field="visibility"' + (canChangeVisibility ? '' : ' disabled') + '>' +
-            '<option value="private" ' + (task.visibility === 'private' ? 'selected' : '') + '>🔒 Private</option>' +
-            '<option value="public" ' + (task.visibility === 'public' ? 'selected' : '') + '>🔓 Public</option>' +
+            '<option value="private" ' + (task.visibility === 'private' ? 'selected' : '') + '>Private</option>' +
+            '<option value="public" ' + (task.visibility === 'public' ? 'selected' : '') + '>Public</option>' +
           '</select>' +
           (!canChangeVisibility ? '<div class="bk-field__meta">Only the creator or an admin can change visibility.</div>' : '') +
         '</div>' +
@@ -454,8 +449,8 @@
               '<span class="bk-comment__author">' + escapeHtml(c._authorName || c.authorEmail) + '</span>' +
               '<span class="bk-comment__date">' + formatDate(c.creationDate) + '</span>' +
               '<span class="bk-comment__actions">' +
-                '<button class="bk-comment__btn" data-action="edit-comment" data-comment-id="' + escapeHtml(c.id) + '">✏</button>' +
-                '<button class="bk-comment__btn" data-action="delete-comment" data-comment-id="' + escapeHtml(c.id) + '">🗑</button>' +
+                '<button class="bk-comment__btn" data-action="edit-comment" data-comment-id="' + escapeHtml(c.id) + '">Edit</button>' +
+                '<button class="bk-comment__btn" data-action="delete-comment" data-comment-id="' + escapeHtml(c.id) + '">Del</button>' +
               '</span>' +
             '</div>' +
             '<div class="bk-comment__text" data-comment-text="' + escapeHtml(c.id) + '">' + escapeHtml(c.text || '') + '</div>' +
@@ -528,9 +523,7 @@
     var toast = document.createElement('div');
     toast.className = 'bk-toast bk-toast--' + type;
 
-    var icons = { success: '✅', error: '❌', warning: '⚠', info: 'ℹ' };
     toast.innerHTML =
-      '<span class="bk-toast__icon">' + (icons[type] || 'ℹ') + '</span>' +
       '<span class="bk-toast__msg">' + escapeHtml(message) + '</span>';
 
     if (undoCallback) {
@@ -547,7 +540,7 @@
 
     var dismissBtn = document.createElement('button');
     dismissBtn.className = 'bk-toast__dismiss';
-    dismissBtn.textContent = '✕';
+    dismissBtn.textContent = 'X';
     dismissBtn.addEventListener('click', function() { removeToast(toast); });
     toast.appendChild(dismissBtn);
 
@@ -922,183 +915,156 @@
     body.addEventListener('dragstart', function(e) {
       var card = e.target.closest('.bk-activity-card');
       if (!card) return;
-      var activityId = card.getAttribute('data-activity-id');
-      var version = parseInt(card.getAttribute('data-version'), 10) || 1;
-      _dragData = { id: activityId, version: version };
+      _dragData = {
+        id: card.getAttribute('data-activity-id'),
+        version: parseInt(card.getAttribute('data-version'), 10) || 1
+      };
       card.classList.add('bk-activity-card--dragging');
       e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', activityId);
+      e.dataTransfer.setData('text/plain', _dragData.id);
     });
 
     body.addEventListener('dragend', function(e) {
-      var card = e.target.closest('.bk-activity-card');
-      if (card) card.classList.remove('bk-activity-card--dragging');
-      document.querySelectorAll('.bk-column__drop-zone--active').forEach(function(el) {
-        el.classList.remove('bk-column__drop-zone--active');
-      });
-      document.querySelectorAll('.bk-column--drag-over').forEach(function(el) {
-        el.classList.remove('bk-column--drag-over');
-      });
+      cleanupDrag();
     });
 
     body.addEventListener('dragover', function(e) {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
-
-      var dropZone = e.target.closest('.bk-column__drop-zone');
-      if (dropZone) {
-        dropZone.classList.add('bk-column__drop-zone--active');
-      }
       var column = e.target.closest('.bk-column');
-      if (column) {
-        column.classList.add('bk-column--drag-over');
-      }
+      if (column) column.classList.add('bk-column--drag-over');
     });
 
     body.addEventListener('dragleave', function(e) {
-      var dropZone = e.target.closest('.bk-column__drop-zone');
-      if (dropZone) {
-        dropZone.classList.remove('bk-column__drop-zone--active');
-      }
       var column = e.target.closest('.bk-column');
-      if (column) {
-        column.classList.remove('bk-column--drag-over');
-      }
+      if (column) column.classList.remove('bk-column--drag-over');
     });
 
     body.addEventListener('drop', function(e) {
       e.preventDefault();
-      document.querySelectorAll('.bk-column__drop-zone--active').forEach(function(el) {
-        el.classList.remove('bk-column__drop-zone--active');
-      });
-      document.querySelectorAll('.bk-column--drag-over').forEach(function(el) {
-        el.classList.remove('bk-column--drag-over');
-      });
-
+      cleanupDropHighlights();
       if (!_dragData) return;
 
-      var dropZone = e.target.closest('.bk-column__drop-zone');
-      if (!dropZone) return;
+      var columnBody = e.target.closest('.bk-column__body');
+      if (!columnBody) return;
 
-      var columnId = dropZone.getAttribute('data-column-id');
-      var newOrder = parseInt(dropZone.getAttribute('data-drop-index'), 10);
+      var columnId = columnBody.getAttribute('data-column-id');
+      var cards = columnBody.querySelectorAll('.bk-activity-card');
+      var dropIndex = cards.length;
+      for (var i = 0; i < cards.length; i++) {
+        var rect = cards[i].getBoundingClientRect();
+        if (e.clientY < rect.top + rect.height / 2) {
+          dropIndex = i;
+          break;
+        }
+      }
 
-      if (!columnId || isNaN(newOrder)) return;
-
-      // Optimistic UI: update state immediately
       var activity = findActivityById(_dragData.id);
-      if (!activity) return;
+      if (!activity) { _dragData = null; return; }
 
       var oldColumnId = activity.columnId;
       var oldOrder = activity.columnOrder;
-
-      // Update local state
       activity.columnId = columnId;
-      activity.columnOrder = newOrder;
-
-      // Re-render kanban
+      activity.columnOrder = dropIndex;
       renderKanban();
 
-      // Send to server
       google.script.run
         .withSuccessHandler(function(result) {
           replaceActivityInState(result);
-          showSuccessToast('Card moved');
         })
         .withFailureHandler(function(err) {
-          // Revert optimistic update
           activity.columnId = oldColumnId;
           activity.columnOrder = oldOrder;
           renderKanban();
-          showErrorToast('Could not move card: ' + (err.message || 'Error'));
+          showErrorToast('Could not move card');
         })
-        .moveActivity(_dragData.id, columnId, newOrder, _dragData.version || 1);
+        .moveActivity(_dragData.id, columnId, dropIndex, _dragData.version);
 
       _dragData = null;
     });
 
-    // Touch support for drag-and-drop
-    var longPressTimer = null;
-    var touchDragData = null;
+    // Touch DnD support
+    var _touchData = null;
+    var _pressTimer = null;
 
     body.addEventListener('touchstart', function(e) {
       var card = e.target.closest('.bk-activity-card');
       if (!card) return;
-      var touch = e.touches[0];
-      longPressTimer = setTimeout(function() {
-        card.classList.add('bk-activity-card--dragging');
-        touchDragData = {
+      _pressTimer = setTimeout(function() {
+        _touchData = {
           id: card.getAttribute('data-activity-id'),
-          version: parseInt(card.getAttribute('data-version'), 10) || 1,
-          card: card,
-          startX: touch.clientX,
-          startY: touch.clientY
+          version: parseInt(card.getAttribute('data-version'), 10) || 1
         };
-      }, 200);
+        card.classList.add('bk-activity-card--dragging');
+      }, 300);
     }, { passive: true });
 
     body.addEventListener('touchmove', function(e) {
-      if (!touchDragData) return;
+      if (!_touchData) return;
       e.preventDefault();
       var touch = e.touches[0];
-      touchDragData.card.style.position = 'fixed';
-      touchDragData.card.style.zIndex = 9999;
-      touchDragData.card.style.pointerEvents = 'none';
-      touchDragData.card.style.left = (touch.clientX - 110) + 'px';
-      touchDragData.card.style.top = (touch.clientY - 60) + 'px';
-
-      // Highlight drop zone under finger
       var el = document.elementFromPoint(touch.clientX, touch.clientY);
-      var dropZone = el ? el.closest('.bk-column__drop-zone') : null;
-      document.querySelectorAll('.bk-column__drop-zone--active').forEach(function(dz) {
-        dz.classList.remove('bk-column__drop-zone--active');
+      var column = el ? el.closest('.bk-column') : null;
+      document.querySelectorAll('.bk-column--drag-over').forEach(function(c) {
+        c.classList.remove('bk-column--drag-over');
       });
-      if (dropZone) dropZone.classList.add('bk-column__drop-zone--active');
+      if (column) column.classList.add('bk-column--drag-over');
     }, { passive: false });
 
     body.addEventListener('touchend', function(e) {
-      if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
-      if (!touchDragData) return;
+      if (_pressTimer) { clearTimeout(_pressTimer); _pressTimer = null; }
+      if (!_touchData) return;
 
-      touchDragData.card.style.position = '';
-      touchDragData.card.style.zIndex = '';
-      touchDragData.card.style.pointerEvents = '';
-      touchDragData.card.style.left = '';
-      touchDragData.card.style.top = '';
-      touchDragData.card.classList.remove('bk-activity-card--dragging');
+      document.querySelectorAll('.bk-activity-card--dragging').forEach(function(c) {
+        c.classList.remove('bk-activity-card--dragging');
+      });
 
       var touch = e.changedTouches[0];
       var el = document.elementFromPoint(touch.clientX, touch.clientY);
-      var dropZone = el ? el.closest('.bk-column__drop-zone') : null;
+      cleanupDropHighlights();
 
-      if (dropZone) {
-        var columnId = dropZone.getAttribute('data-column-id');
-        var newOrder = parseInt(dropZone.getAttribute('data-drop-index'), 10);
-        if (columnId && !isNaN(newOrder)) {
-          var activity = findActivityById(touchDragData.id);
-          if (activity) {
-            activity.columnId = columnId;
-            activity.columnOrder = newOrder;
-            renderKanban();
-            google.script.run
-              .withSuccessHandler(function(result) {
-                replaceActivityInState(result);
-              })
-              .withFailureHandler(function(err) {
-                // Re-render from server on failure
-                showErrorToast('Could not move card');
-                renderAll();
-              })
-              .moveActivity(touchDragData.id, columnId, newOrder, touchDragData.version);
-          }
+      var columnBody = el ? el.closest('.bk-column__body') : null;
+      if (!columnBody) { _touchData = null; return; }
+
+      var columnId = columnBody.getAttribute('data-column-id');
+      var cards = columnBody.querySelectorAll('.bk-activity-card');
+      var dropIndex = cards.length;
+      for (var i = 0; i < cards.length; i++) {
+        var rect = cards[i].getBoundingClientRect();
+        if (touch.clientY < rect.top + rect.height / 2) {
+          dropIndex = i;
+          break;
         }
       }
 
-      document.querySelectorAll('.bk-column__drop-zone--active').forEach(function(dz) {
-        dz.classList.remove('bk-column__drop-zone--active');
-      });
-      touchDragData = null;
+      var activity = findActivityById(_touchData.id);
+      if (!activity) { _touchData = null; return; }
+
+      activity.columnId = columnId;
+      activity.columnOrder = dropIndex;
+      renderKanban();
+
+      google.script.run
+        .withSuccessHandler(function(result) { replaceActivityInState(result); })
+        .withFailureHandler(function(err) { renderKanban(); showErrorToast('Could not move card'); })
+        .moveActivity(_touchData.id, columnId, dropIndex, _touchData.version);
+
+      _touchData = null;
     }, { passive: true });
+
+    function cleanupDrag() {
+      document.querySelectorAll('.bk-activity-card--dragging').forEach(function(el) {
+        el.classList.remove('bk-activity-card--dragging');
+      });
+      cleanupDropHighlights();
+      _dragData = null;
+    }
+
+    function cleanupDropHighlights() {
+      document.querySelectorAll('.bk-column--drag-over').forEach(function(el) {
+        el.classList.remove('bk-column--drag-over');
+      });
+    }
   }
 
   // ---------------------------------------------------------------
@@ -1521,7 +1487,7 @@
           '<input type="date" class="bk-vacation-start" value="' + (vacations[i].start || '') + '">' +
           '<span>to</span>' +
           '<input type="date" class="bk-vacation-end" value="' + (vacations[i].end || '') + '">' +
-          '<button class="bk-btn bk-btn--danger bk-btn--sm" data-action="remove-vacation">✕</button>' +
+          '<button class="bk-btn bk-btn--danger bk-btn--sm" data-action="remove-vacation">X</button>' +
         '</div>';
     }
 
@@ -1843,11 +1809,11 @@
     if (pane === 'tasks') {
       state.tasksPaneHidden = !state.tasksPaneHidden;
       paneEl.classList.toggle('bk-pane--hidden');
-      btn.textContent = state.tasksPaneHidden ? '▶ Show' : '◀ Hide';
+      btn.textContent = state.tasksPaneHidden ? '> Show' : '< Hide';
     } else {
       state.activitiesPaneHidden = !state.activitiesPaneHidden;
       paneEl.classList.toggle('bk-pane--hidden');
-      btn.textContent = state.activitiesPaneHidden ? '▶ Show' : '◀ Hide';
+      btn.textContent = state.activitiesPaneHidden ? '> Show' : '< Hide';
     }
   }
 

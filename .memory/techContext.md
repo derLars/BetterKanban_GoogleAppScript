@@ -126,13 +126,13 @@ Column (Config.json / ConfigOverlay)
   },
   "kanban": {
     "columns": [
-      { "id": "col-todo",       "name": "To Do",       "order": 0 },
-      { "id": "col-in-progress","name": "In Progress",  "order": 1 },
-      { "id": "col-blocked",    "name": "Blocked",      "order": 2 },
-      { "id": "col-review",     "name": "In Review",    "order": 3 },
-      { "id": "col-done",       "name": "Done",         "order": 4 }
+      { "name": "To Do",       "order": 0 },
+      { "name": "In Progress", "order": 1 },
+      { "name": "Blocked",     "order": 2 },
+      { "name": "In Review",   "order": 3 },
+      { "name": "Done",        "order": 4 }
     ],
-    "completedColumnId": "col-done"
+    "completedColumnId": "Done"
   },
   "database": {
     "backupSpreadsheetId": "",
