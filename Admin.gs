@@ -159,7 +159,6 @@ function deleteUser(userEmail) {
   writeDumpSheet(ss.getId(), dumpName, tHeaders, userTasks);
 
   // Step 2: Hard-delete private tasks
-  var remainingTasks = [];
   var updatedTasks = [];
   for (var ti = 0; ti < tasks.length; ti++) {
     var t = tasks[ti];
@@ -362,7 +361,7 @@ function importSnapshot(date, mode) {
         }
       }
     });
-  });
+  }
 
   saveActivities(activities);
 
