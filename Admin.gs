@@ -306,10 +306,10 @@ function importSnapshot(date, mode) {
     }
 
     // Determine target column (by 1-indexed position)
-    var targetColumnId = (columns.length > 0) ? columns[0].name : 'Activities';
+    var targetIndex = 0;
     var colNumber = parseInt(row.columnNumber, 10);
     if (!isNaN(colNumber) && colNumber >= 1 && colNumber <= columns.length) {
-      targetColumnId = columns[colNumber - 1].name;
+      targetIndex = colNumber - 1;
     }
 
     var comments = [];
@@ -330,7 +330,7 @@ function importSnapshot(date, mode) {
       creationDate: row.creationDate || new Date().toISOString(),
       dueDate: row.dueDate || null,
       assignedTo: row.assignedTo || null,
-      columnId: targetColumnId,
+      columnIndex: targetIndex,
       columnOrder: parseInt(row.columnOrder, 10) || 0,
       comments: comments,
       version: 1,
@@ -342,25 +342,22 @@ function importSnapshot(date, mode) {
   });
 
   // Renumber columnOrder across all columns after import
-  var columnNames = {};
-  columns.forEach(function(c) { columnNames[c.name] = true; });
-
-  // Fix activities without a valid column
+  // Fix activities with out-of-range columnIndex
   activities.forEach(function(a) {
-    if (!columnNames[a.columnId] && columns.length > 0) {
-      a.columnId = columns[0].name;
+    if (a.columnIndex === undefined || a.columnIndex < 0 || a.columnIndex >= columns.length) {
+      a.columnIndex = 0;
     }
   });
 
   // Renumber each column
-  columns.forEach(function(col) {
+  for (var ci = 0; ci < columns.length; ci++) {
     var colCards = activities.filter(function(a) {
-      return a.columnId === col.name;
+      return a.columnIndex === ci;
     }).sort(function(a, b) { return a.columnOrder - b.columnOrder; });
     colCards.forEach(function(card, idx) {
-      for (var ci = 0; ci < activities.length; ci++) {
-        if (activities[ci].id === card.id) {
-          activities[ci].columnOrder = idx;
+      for (var ai = 0; ai < activities.length; ai++) {
+        if (activities[ai].id === card.id) {
+          activities[ai].columnOrder = idx;
           break;
         }
       }

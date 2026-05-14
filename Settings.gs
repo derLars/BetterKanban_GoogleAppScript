@@ -145,10 +145,10 @@ function importFromSpreadsheet(sheetId) {
     }
 
     // Determine target column by columnNumber (1-indexed)
-    var targetColumnId = (columns.length > 0) ? columns[0].name : 'Activities';
+    var targetIndex = 0;
     var colNumber = parseInt(row.columnNumber, 10);
     if (!isNaN(colNumber) && colNumber >= 1 && colNumber <= columns.length) {
-      targetColumnId = columns[colNumber - 1].name;
+      targetIndex = colNumber - 1;
     }
 
     var comments = [];
@@ -165,7 +165,7 @@ function importFromSpreadsheet(sheetId) {
       creationDate: row.creationDate || new Date().toISOString(),
       dueDate: row.dueDate || null,
       assignedTo: row.assignedTo || null,
-      columnId: targetColumnId,
+      columnIndex: targetIndex,
       columnOrder: parseInt(row.columnOrder, 10) || 0,
       comments: comments,
       version: 1,

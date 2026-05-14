@@ -109,9 +109,9 @@ function buildSummary(user, tasks, activities, today, timeZone) {
     myOpenActivities.forEach(function(a) {
       var colName = 'Unknown';
       var cfg = getActiveConfig();
-      cfg.kanban.columns.forEach(function(c) {
-        if (c.id === a.columnId) colName = c.name;
-      });
+      if (a.columnIndex !== undefined && a.columnIndex < cfg.kanban.columns.length) {
+        colName = cfg.kanban.columns[a.columnIndex].name;
+      }
       lines.push('  * ' + a.title + ' [' + colName + ']');
     });
     lines.push('');

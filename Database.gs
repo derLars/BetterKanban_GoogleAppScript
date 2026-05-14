@@ -34,7 +34,7 @@ var VACATION_SHORT_TO_FULL = {
 var ACTIVITY_SHORT_TO_FULL = {
   i: 'id', di: 'deterministicId', t: 'title', dsc: 'description',
   cr: 'creatorEmail', crd: 'creationDate', dud: 'dueDate', asgn: 'assignedTo',
-  col: 'columnId', co: 'columnOrder', cmts: 'comments', ver: 'version',
+  ci: 'columnIndex', co: 'columnOrder', cmts: 'comments', ver: 'version',
   cpd: 'completedDate', dd: 'deletedDate', lmd: 'lastModifiedDate'
 };
 
@@ -256,7 +256,7 @@ function getDefaultConfig() {
       columns: [
         { name: 'Activities', order: 0 }
       ],
-      completedColumnId: null
+      completedColumnIndex: null
     },
     database: {
       backupSpreadsheetId: '', backupTime: '02:00', purgeTime: '03:00',
@@ -358,7 +358,7 @@ function getBackupSpreadsheet() {
 
 var BACKUP_HEADERS = {
   Tasks: ['id', 'deterministicId', 'description', 'creatorEmail', 'creationDate', 'dueDate', 'assignedTo', 'visibility', 'comment', 'version', 'completedDate', 'deletedDate', 'lastModifiedDate'],
-  Activities: ['id', 'deterministicId', 'title', 'description', 'creatorEmail', 'creationDate', 'dueDate', 'assignedTo', 'columnId', 'columnOrder', 'version', 'comments', 'completedDate', 'deletedDate', 'lastModifiedDate'],
+  Activities: ['id', 'deterministicId', 'title', 'description', 'creatorEmail', 'creationDate', 'dueDate', 'assignedTo', 'columnIndex', 'columnOrder', 'version', 'comments', 'completedDate', 'deletedDate', 'lastModifiedDate'],
   Users: ['email', 'displayName', 'firstAccessDate', 'lastAccessDate', 'deletedDate', 'role', 'settings']
 };
 

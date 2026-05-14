@@ -239,13 +239,49 @@
     flex: 1;
     min-width: 0;
   }
-  .bk-pane--hidden {
-    flex: 0;
-    width: 0;
+  .bk-pane {
     overflow: hidden;
   }
   .bk-pane + .bk-pane {
-    border-left: 1px solid var(--border-default);
+    border-left: none;
+  }
+
+  /* Draggable divider */
+  .bk-divider {
+    width: 6px;
+    cursor: col-resize;
+    background: var(--border-default);
+    flex-shrink: 0;
+    transition: background 0.15s;
+    position: relative;
+    z-index: 10;
+  }
+  .bk-divider:hover,
+  .bk-divider--active {
+    background: var(--accent-blue);
+  }
+  .bk-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2px;
+    height: 24px;
+    background: var(--text-muted);
+    transform: translate(-50%, -50%);
+    border-radius: 1px;
+  }
+  .bk-divider:hover::after,
+  .bk-divider--active::after {
+    background: #fff;
+  }
+  /* Body uses fixed flex basis while dragging */
+  .bk-main--dragging {
+    user-select: none;
+    pointer-events: none;
+  }
+  .bk-main--dragging .bk-divider {
+    pointer-events: auto;
   }
 
   .bk-pane__header {
@@ -277,19 +313,6 @@
   .bk-pane__search:focus {
     outline: none;
     border-color: var(--accent-blue);
-  }
-  .bk-pane__toggle {
-    font-size: var(--font-size-xs);
-    color: var(--text-secondary);
-    background: none;
-    border: 1px solid var(--border-default);
-    border-radius: 3px;
-    padding: 2px var(--sp-sm);
-    cursor: pointer;
-    white-space: nowrap;
-  }
-  .bk-pane__toggle:hover {
-    background: var(--bg-hover);
   }
   .bk-pane__add {
     font-size: var(--font-size-lg);

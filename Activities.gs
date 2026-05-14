@@ -32,10 +32,6 @@ function createActivity(data) {
   var cfg = getActiveConfig();
   var now = new Date().toISOString();
   var id = generateUUID();
-  var defaultColumnName = (cfg.kanban.columns && cfg.kanban.columns.length > 0)
-    ? cfg.kanban.columns[0].name
-    : 'Activities';
-
   var activity = {
     id: id,
     deterministicId: computeDeterministicId(email, now, id),
@@ -45,7 +41,7 @@ function createActivity(data) {
     creationDate: now,
     dueDate: data.dueDate || null,
     assignedTo: data.assignedTo || null,
-    columnId: data.columnId || defaultColumnName,
+    columnIndex: (data.columnIndex !== undefined) ? data.columnIndex : 0,
     columnOrder: 0,
     comments: [],
     version: 1,
@@ -58,7 +54,7 @@ function createActivity(data) {
 
   // Place at the top of the target column
   var columnActivities = activities.filter(function(a) {
-    return a.columnId === activity.columnId && !a.deletedDate;
+    return a.columnIndex === activity.columnIndex && !a.deletedDate;
   });
   activity.columnOrder = columnActivities.length;
 
@@ -172,13 +168,12 @@ function completeActivity(id) {
   activity.version += 1;
   activity.lastModifiedDate = new Date().toISOString();
 
-  // Move to completedColumnId if configured
+  // Move to completedColumnIndex if configured
   var cfg = getActiveConfig();
-  if (cfg.kanban.completedColumnId) {
-    activity.columnId = cfg.kanban.completedColumnId;
-    // Place at top (will be renumbered by next move or reorder)
+  if (cfg.kanban.completedColumnIndex !== undefined && cfg.kanban.completedColumnIndex !== null) {
+    activity.columnIndex = cfg.kanban.completedColumnIndex;
     var completedCards = activities.filter(function(a) {
-      return a.columnId === cfg.kanban.completedColumnId && a.id !== id && !a.deletedDate;
+      return a.columnIndex === cfg.kanban.completedColumnIndex && a.id !== id && !a.deletedDate;
     });
     activity.columnOrder = completedCards.length;
   }
@@ -204,10 +199,7 @@ function uncompleteActivity(id) {
   activity.lastModifiedDate = new Date().toISOString();
 
   // Move to first column
-  var cfg = getActiveConfig();
-  if (cfg.kanban.columns && cfg.kanban.columns.length > 0) {
-    activity.columnId = cfg.kanban.columns[0].name;
-  }
+  activity.columnIndex = 0;
   activity.columnOrder = 0;
 
   activities[idx] = activity;
@@ -266,7 +258,7 @@ function undeleteActivity(id) {
 // MOVE (Drag & Drop)
 // -------------------------------------------------------
 
-function moveActivity(id, columnId, newOrder, version) {
+function moveActivity(id, columnIndex, newOrder, version) {
   var activities = loadActivities();
   var idx = findActivityIndex(activities, id);
   if (idx === -1) throw new Error('Activity not found');
@@ -277,15 +269,15 @@ function moveActivity(id, columnId, newOrder, version) {
     throw new Error('Conflict: entity was modified');
   }
 
-  var oldColumnId = activity.columnId;
-  activity.columnId = columnId;
+  var oldColumnIndex = activity.columnIndex;
+  activity.columnIndex = columnIndex;
   activity.version += 1;
   activity.lastModifiedDate = new Date().toISOString();
   activities[idx] = activity;
 
   // Renormalize columnOrder in target column
   var targetCards = activities.filter(function(a) {
-    return a.columnId === columnId;
+    return a.columnIndex === columnIndex;
   }).sort(function(a, b) { return a.columnOrder - b.columnOrder; });
 
   // Remove the moved card from its current position in the sorted array
@@ -311,9 +303,9 @@ function moveActivity(id, columnId, newOrder, version) {
   });
 
   // Also renormalize source column if different from target
-  if (oldColumnId !== columnId) {
+  if (oldColumnIndex !== columnIndex) {
     var sourceCards = activities.filter(function(a) {
-      return a.columnId === oldColumnId;
+      return a.columnIndex === oldColumnIndex;
     }).sort(function(a, b) { return a.columnOrder - b.columnOrder; });
 
     sourceCards.forEach(function(card, index) {

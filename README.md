@@ -82,7 +82,7 @@ Configuration is stored as a physical JSON file on Google Drive.
       { "name": "In Review",   "order": 3 },
       { "name": "Done",        "order": 4 }
     ],
-    "completedColumnId": "Done"
+    "completedColumnIndex": 4
   },
   "database": {
     "backupSpreadsheetId": "",
