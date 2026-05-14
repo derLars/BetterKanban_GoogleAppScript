@@ -17,10 +17,10 @@ BetterKanban_GoogleAppScript/
 ├── Notifications.gs         ← Chat webhook dispatch, daily summaries
 ├── Purge.gs                 ← Scheduled cleanup of old records
 ├── Triggers.gs              ← Installable time-driven trigger management
-├── Html/
-│   ├── Index.html           ← Main HTML shell (skeleton layout)
-│   ├── Styles.css           ← All CSS (custom properties for theming)
-│   └── App.js               ← Client-side JS (state, rendering, DnD, polling)
+├── Index.html              ← Main HTML shell (skeleton layout)
+├── Styles.html              ← All CSS (custom properties for theming)
+├── App.html                  ← Client-side JS (state, rendering, DnD, polling)
+├── appscript.json             ← GAS manifest (timeZone, V8 runtime)
 ├── Tests.gs                 ← Unit tests (run from GAS editor)
 └── README.md                ← This file
 ```

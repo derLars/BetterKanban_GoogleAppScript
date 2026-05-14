@@ -16,10 +16,10 @@ BetterKanban_GoogleAppScript/
 ├── Notifications.gs            ← Chat webhook dispatch, daily summary generation
 ├── Purge.gs                    ← Scheduled cleanup of old completed/soft-deleted tasks & activities
 ├── Triggers.gs                 ← Installable trigger management (setup/teardown)
-├── Html/
-│   ├── Index.html              ← Main HTML shell (skeleton layout, tabs, zones, modals)
-│   ├── Styles.css              ← All CSS (custom properties for theming)
-│   └── App.js                  ← Client-side JS (state, API calls, DnD, search filter, modals)
+├── Index.html              ← Main HTML shell (skeleton layout, tabs, zones, modals)
+├── Styles.html              ← All CSS (custom properties for theming)
+├── App.html                  ← Client-side JS (state, API calls, DnD, search filter, modals)
+├── appscript.json             ← GAS manifest (timeZone, V8 runtime)
 ├── Tests.gs                    ← Unit tests (run manually from GAS editor)
 ├── README.md                   ← Setup & deployment instructions
 └── .memory/                    ← Memory Bank (agent context)
@@ -51,7 +51,7 @@ Every `.gs` file exports global functions callable from the client via `google.s
 
 ### 2.2 Frontend (Browser JS via HtmlService)
 
-Single-page application architecture within `Html/App.js`:
+Single-page application architecture within `App.html`:
 
 - **State object** — single `state` variable holding: `user`, `tasks`, `activities`, `columns`, `config`, `lastVersion`, `paneStates`, `searchTerms`, `filterToggles`
 - **Rendering functions** — `renderTasks()`, `renderKanban()`, `renderWelcomeBar()` — pure DOM manipulation (no framework)
@@ -64,12 +64,12 @@ Single-page application architecture within `Html/App.js`:
 ```javascript
 // Main.gs — required helper
 function include(filename) {
-  return HtmlService.createHtmlOutputFromFile('Html/' + filename).getContent();
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
 ```
 
 ```html
-<!-- Html/Index.html — skeleton only, no data embedded -->
+<!-- Index.html — skeleton only, no data embedded -->
 <!DOCTYPE html>
 <html>
 <head>

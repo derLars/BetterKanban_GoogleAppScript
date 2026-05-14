@@ -19,7 +19,7 @@ function doGet() {
   }
 
   var cfg = getActiveConfig();
-  var template = HtmlService.createTemplateFromFile('Html/Index');
+  var template = HtmlService.createTemplateFromFile('Index');
   template.userEmail = userEmail;
   template.userDisplayName = user ? user.displayName : '';
   template.isAdmin = user ? user.role === 'admin' : false;
@@ -31,7 +31,7 @@ function doGet() {
 }
 
 function include(filename) {
-  return HtmlService.createHtmlOutputFromFile('Html/' + filename).getContent();
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
 
 // -------------------------------------------------------

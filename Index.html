@@ -3,7 +3,7 @@
 <head>
   <base target="_top">
   <meta charset="utf-8">
-  <?!= include('Styles.css'); ?>
+  <?!= include('Styles'); ?>
 </head>
 <body>
   <div id="app">
@@ -219,7 +219,7 @@
   <!-- Toast Container -->
   <div class="bk-toast-container" id="bk-toast-container"></div>
 
-  <?!= include('App.js'); ?>
+  <?!= include('App'); ?>
   <script>
     google.script.run
       .withSuccessHandler(onInit)
