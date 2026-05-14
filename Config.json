@@ -1,0 +1,33 @@
+{
+  "app": {
+    "title": "BetterKanban",
+    "timeZone": "America/New_York",
+    "dateFormat": "YYYY-MM-DD"
+  },
+  "kanban": {
+    "columns": [
+      { "id": "col-todo",       "name": "To Do",       "order": 0 },
+      { "id": "col-in-progress","name": "In Progress",  "order": 1 },
+      { "id": "col-blocked",    "name": "Blocked",      "order": 2 },
+      { "id": "col-review",     "name": "In Review",    "order": 3 },
+      { "id": "col-done",       "name": "Done",         "order": 4 }
+    ],
+    "completedColumnId": "col-done"
+  },
+  "database": {
+    "backupSpreadsheetId": "",
+    "backupTime": "02:00",
+    "purgeTime": "03:00",
+    "notificationTime": "08:00",
+    "backupSnapshotCount": 5,
+    "completedTaskMaxCount": 100,
+    "completedActivityMaxCount": 100,
+    "deletedTaskRetentionDays": 7,
+    "maxCommentsPerActivity": 50
+  },
+  "ui": {
+    "theme": "light",
+    "pageSize": 50,
+    "pollingIntervalSeconds": 10
+  }
+}

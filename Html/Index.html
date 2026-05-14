@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <?!= include('Styles.css'); ?>
+</head>
+<body>
+  <div id="app">
+    <!-- Top Bar -->
+    <div id="bk-topbar" class="bk-topbar">
+      <span class="bk-topbar__title">BetterKanban</span>
+      <div class="bk-topbar__tabs">
+        <button class="bk-topbar__tab bk-topbar__tab--active" data-tab="home">Home</button>
+        <button class="bk-topbar__tab bk-hidden" data-tab="admin" id="bk-admin-tab">Admin</button>
+      </div>
+      <div class="bk-topbar__spacer"></div>
+      <div class="bk-topbar__user" id="bk-user-menu">
+        <div class="bk-topbar__avatar" id="bk-avatar">U</div>
+        <span id="bk-user-name">User</span>
+        <span>▼</span>
+        <div class="bk-user-dropdown" id="bk-user-dropdown">
+          <button class="bk-user-dropdown__item" data-action="settings">Settings</button>
+          <button class="bk-user-dropdown__item" data-action="close-session">Close session</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Welcome Bar -->
+    <div id="bk-welcome" class="bk-welcome">
+      <span>Welcome back, <span class="bk-welcome__name" id="bk-welcome-name">—</span></span>
+      <div class="bk-welcome__counters" id="bk-welcome-counters"></div>
+    </div>
+
+    <!-- Error Banner -->
+    <div class="bk-error-banner" id="bk-error-banner">Connection error. Retrying…</div>
+
+    <!-- Main Content -->
+    <div class="bk-main">
+      <!-- Tasks Pane -->
+      <div class="bk-pane" id="bk-pane-tasks">
+        <div class="bk-pane__header">
+          <span class="bk-pane__title">Tasks</span>
+          <input class="bk-pane__search" type="text" placeholder="Search tasks…" id="bk-search-tasks">
+          <button class="bk-pane__toggle" id="bk-toggle-tasks">◀ Hide</button>
+          <button class="bk-pane__add" id="bk-add-task" title="New Task">+</button>
+        </div>
+        <div class="bk-pane__filters">
+          <button class="bk-pane__filter-btn" data-filter="completed-tasks">☐ Show completed</button>
+          <button class="bk-pane__filter-btn" data-filter="deleted-tasks">☐ Show deleted</button>
+        </div>
+        <div class="bk-pane__body" id="bk-tasks-body">
+          <!-- Skeleton -->
+          <div class="bk-skeleton" id="bk-tasks-skeleton">
+            <div class="bk-skeleton__card"></div>
+            <div class="bk-skeleton__card"></div>
+            <div class="bk-skeleton__card"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activities Pane -->
+      <div class="bk-pane" id="bk-pane-activities">
+        <div class="bk-pane__header">
+          <span class="bk-pane__title">Activities</span>
+          <input class="bk-pane__search" type="text" placeholder="Search activities…" id="bk-search-activities">
+          <button class="bk-pane__toggle" id="bk-toggle-activities">◀ Hide</button>
+          <button class="bk-pane__add" id="bk-add-activity" title="New Activity">+</button>
+        </div>
+        <div class="bk-pane__filters">
+          <button class="bk-pane__filter-btn" data-filter="completed-activities">☐ Show completed</button>
+          <button class="bk-pane__filter-btn" data-filter="deleted-activities">☐ Show deleted</button>
+        </div>
+        <div class="bk-pane__body" id="bk-activities-body">
+          <!-- Skeleton -->
+          <div class="bk-skeleton__kanban" id="bk-kanban-skeleton">
+            <div class="bk-skeleton__col">
+              <div class="bk-skeleton__col-card"></div>
+              <div class="bk-skeleton__col-card"></div>
+            </div>
+            <div class="bk-skeleton__col">
+              <div class="bk-skeleton__col-card"></div>
+            </div>
+            <div class="bk-skeleton__col">
+              <div class="bk-skeleton__col-card"></div>
+              <div class="bk-skeleton__col-card"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task Detail Modal -->
+  <div class="bk-modal-overlay" id="bk-modal-task">
+    <div class="bk-modal bk-modal--task">
+      <div class="bk-modal__header">
+        <span class="bk-modal__title">Edit Task</span>
+        <button class="bk-modal__close" data-close-modal>✕</button>
+      </div>
+      <div class="bk-modal__body" id="bk-modal-task-body">
+        <!-- Populated by JS -->
+      </div>
+      <div class="bk-modal__actions" id="bk-modal-task-actions"></div>
+    </div>
+  </div>
+
+  <!-- Activity Detail Modal -->
+  <div class="bk-modal-overlay" id="bk-modal-activity">
+    <div class="bk-modal bk-modal--activity">
+      <div class="bk-modal__header">
+        <span class="bk-modal__title">Edit Activity</span>
+        <button class="bk-modal__close" data-close-modal>✕</button>
+      </div>
+      <div class="bk-modal__body" id="bk-modal-activity-body">
+        <!-- Populated by JS -->
+      </div>
+      <div class="bk-modal__actions" id="bk-modal-activity-actions"></div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="bk-modal-overlay" id="bk-modal-settings">
+    <div class="bk-modal bk-modal--settings">
+      <div class="bk-modal__header">
+        <span class="bk-modal__title">Settings</span>
+        <button class="bk-modal__close" data-close-modal>✕</button>
+      </div>
+      <div class="bk-modal__body" id="bk-modal-settings-body">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Modal -->
+  <div class="bk-modal-overlay" id="bk-modal-admin">
+    <div class="bk-modal bk-modal--admin">
+      <div class="bk-modal__header">
+        <span class="bk-modal__title">Admin</span>
+        <button class="bk-modal__close" data-close-modal>✕</button>
+      </div>
+      <div class="bk-modal__body" id="bk-modal-admin-body">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- New Task Modal -->
+  <div class="bk-modal-overlay" id="bk-modal-new-task">
+    <div class="bk-modal bk-modal--task">
+      <div class="bk-modal__header">
+        <span class="bk-modal__title">New Task</span>
+        <button class="bk-modal__close" data-close-modal>✕</button>
+      </div>
+      <div class="bk-modal__body" id="bk-modal-new-task-body">
+        <div class="bk-field">
+          <label class="bk-field__label">Description *</label>
+          <textarea class="bk-field__textarea" id="bk-new-task-desc" placeholder="What needs to be done?"></textarea>
+        </div>
+        <div class="bk-field">
+          <label class="bk-field__label">Due date</label>
+          <input class="bk-field__input" type="date" id="bk-new-task-due">
+        </div>
+        <div class="bk-field">
+          <label class="bk-field__label">Assigned to</label>
+          <select class="bk-field__select" id="bk-new-task-assignee"><option value="">— Unassigned —</option></select>
+        </div>
+        <div class="bk-field">
+          <label class="bk-field__label">Visibility</label>
+          <select class="bk-field__select" id="bk-new-task-visibility">
+            <option value="private">🔒 Private</option>
+            <option value="public">🔓 Public</option>
+          </select>
+        </div>
+        <div class="bk-field">
+          <label class="bk-field__label">Comment</label>
+          <textarea class="bk-field__textarea" id="bk-new-task-comment" placeholder="Optional note..."></textarea>
+        </div>
+      </div>
+      <div class="bk-modal__actions">
+        <button class="bk-btn bk-btn--primary" id="bk-new-task-save">Create Task</button>
+        <button class="bk-btn bk-btn--secondary" data-close-modal>Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Activity Modal -->
+  <div class="bk-modal-overlay" id="bk-modal-new-activity">
+    <div class="bk-modal bk-modal--activity">
+      <div class="bk-modal__header">
+        <span class="bk-modal__title">New Activity</span>
+        <button class="bk-modal__close" data-close-modal>✕</button>
+      </div>
+      <div class="bk-modal__body" id="bk-modal-new-activity-body">
+        <div class="bk-field">
+          <label class="bk-field__label">Title *</label>
+          <input class="bk-field__input" type="text" id="bk-new-activity-title" placeholder="Activity title">
+        </div>
+        <div class="bk-field">
+          <label class="bk-field__label">Description</label>
+          <textarea class="bk-field__textarea" id="bk-new-activity-desc" placeholder="Optional description..."></textarea>
+        </div>
+        <div class="bk-field">
+          <label class="bk-field__label">Due date</label>
+          <input class="bk-field__input" type="date" id="bk-new-activity-due">
+        </div>
+        <div class="bk-field">
+          <label class="bk-field__label">Assigned to</label>
+          <select class="bk-field__select" id="bk-new-activity-assignee"><option value="">— Unassigned —</option></select>
+        </div>
+      </div>
+      <div class="bk-modal__actions">
+        <button class="bk-btn bk-btn--primary" id="bk-new-activity-save">Create Activity</button>
+        <button class="bk-btn bk-btn--secondary" data-close-modal>Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="bk-toast-container" id="bk-toast-container"></div>
+
+  <?!= include('App.js'); ?>
+  <script>
+    google.script.run
+      .withSuccessHandler(onInit)
+      .withFailureHandler(function(err) {
+        showErrorToast('Failed to load initial data: ' + (err.message || 'Unknown error'));
+      })
+      .getInitialData();
+  </script>
+</body>
+</html>

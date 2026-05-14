@@ -19,20 +19,16 @@
 | Memory Bank (`.memory/` directory) | ✅ Done | projectBrief.md, productContext.md, systemPatterns.md, techContext.md, progress.md |
 | `.git` init | ✅ Done | Repository initialized in `/home/BetterKanban_GoogleAppScript` |
 
-**Next priority:** Create Config.json, then implement backend files in dependency order.
-
 ---
 
 ## Phase 1: Backend Foundation
 
 | Item | Status | Notes |
 |---|---|---|
-| `Config.json` | ⏳ Pending | Create default configuration file per §7.3 schema |
-| `Database.gs` | ⏳ Pending | Core: `loadDatabase()`, `saveDatabase()`, `loadConfig()`, `computeDeterministicId()`, key translation (short↔full), cache write-through, size estimation, backup/restore, dump sheet read |
-| `Main.gs` | ⏳ Pending | `doGet()`, `include()` helper, `getInitialData()`, `getCurrentUser()`, `poll()` |
-| `Triggers.gs` | ⏳ Pending | `setupDailyTriggers()`, `keepWarm()` |
-
-**Dependency order:** `Config.json` → `Database.gs` → `Main.gs` → `Triggers.gs`
+| `Config.json` | ✅ Done | Default configuration per §7.3 with 5 columns |
+| `Database.gs` | ✅ Done | `loadDatabase/saveDatabase`, `loadConfig()` (merge Config.json + configOverlay), `computeDeterministicId()` (SHA-256), short↔full key translation maps for all 4 entity types, cache write-through, backup snapshot creation/rotation, dump sheet read/write, revert dumps, size estimation & auto-purge, UUID generation |
+| `Main.gs` | ✅ Done | `doGet()` with session handling & auto-registration, `include()` helper, `getInitialData()` (full snapshot with visibility filtering + display name enrichment), `getCurrentUser()`, `poll(lastVersion)` (fast path via CacheService, full path via SP) |
+| `Triggers.gs` | ✅ Done | `setupDailyTriggers()` (backup, purge tasks, purge activities, chat notification, keep-warm), `removeAllTriggers()`, `keepWarm()` |
 
 ---
 
@@ -40,15 +36,13 @@
 
 | Item | Status | Notes |
 |---|---|---|
-| `Users.gs` | ⏳ Pending | `registerUser()`, `getUser()`, `getAllUsers()`, `updateUserSettings()`, display name derivation |
-| `Tasks.gs` | ⏳ Pending | `createTask()`, `getTasks()`, `getTask()`, `updateTask()`, `completeTask()`, `uncompleteTask()`, `deleteTask()`, `undeleteTask()`, `purgeOldTasks()` |
-| `Activities.gs` | ⏳ Pending | `createActivity()`, `getActivities()`, `getActivity()`, `updateActivity()`, `completeActivity()`, `uncompleteActivity()`, `deleteActivity()`, `undeleteActivity()`, `moveActivity()`, `purgeOldActivities()`, `addComment()`, `updateComment()`, `deleteComment()` |
-| `Admin.gs` | ⏳ Pending | `isAdmin()`, `getAdminList()`, `saveAdminList()`, `getConfig()`, `saveConfig()`, `deleteUser()`, `getAvailableSnapshots()`, `importSnapshot()` |
-| `Settings.gs` | ⏳ Pending | `updateProfile()`, `saveChatWebhook()`, `saveVacations()`, `importFromSpreadsheet()`, `exportToSpreadsheet()` |
-| `Notifications.gs` | ⏳ Pending | `sendDailyChatSummaries()`, vacation suppression logic |
-| `Purge.gs` | ⏳ Pending | Called by daily trigger; hard-deletes old completed/soft-deleted tasks & activities |
-
-**Dependency order:** `Users.gs` → `Tasks.gs` + `Activities.gs` → `Admin.gs` → `Settings.gs` → `Notifications.gs` → `Purge.gs`
+| `Users.gs` | ✅ Done | `registerUser()` (auto-registration with deleted check), `getUser()`, `getAllUsers()`, `updateUserSettings()`, `isAdmin()`, `deriveDisplayName()` (handles hyphenated, dot-separated, single-part emails) |
+| `Tasks.gs` | ✅ Done | Full CRUD: `createTask()` (validates description, sets deterministicId), `getTasks(opts)` (visibility filtering: public + own private, showDeleted, showCompleted), `getTask()`, `updateTask()` (field-level merge with optimistic locking, visibility guard), `completeTask/uncompleteTask`, `deleteTask/undeleteTask` |
+| `Activities.gs` | ✅ Done | Full CRUD: `createActivity()` (defaults to first column), `getActivities/Activity`, `updateActivity()` (field-level merge), `completeActivity` (moves to completedColumnId), `uncompleteActivity` (moves to first column), `delete/undelete`, `moveActivity()` (column move + order renormalization across source & target columns), comment operations: `addComment` (newest-first, max comments eviction), `updateComment`, `deleteComment` |
+| `Admin.gs` | ✅ Done | `checkAdmin()` guard, `getAdminList()/saveAdminList()` (email validation, last-admin guard), `getConfig()/saveConfig()` (JSON validation + spreadsheet accessibility check), `deleteUser()` (dump generation, private task hard-delete, public task reassignment to `_deleted_`, activity reassignment, user soft-delete), `getAvailableSnapshots()`, `importSnapshot()` (merge/overwrite modes, revert dump creation, columnNumber → columnId mapping, order renormalization) |
+| `Settings.gs` | ✅ Done | `updateProfile()`, `saveChatWebhook()` (URL prefix validation), `saveVacations()` (date range validation), `importFromSpreadsheet()` (reads `_Dump_Tasks`/`_Dump_Activities`, dedup by deterministicId, columnNumber mapping, version reset to 1), `exportToSpreadsheet()` (creates/updates dump sheets) |
+| `Notifications.gs` | ✅ Done | `sendDailyChatSummaries()` (iterates users with webhooks, skips on vacation, builds summary with open tasks/due today/overdue/open activities), `isOnVacation()` (date range check), `buildSummary()`, `sendChatMessage()` (HTTP POST via UrlFetchApp) |
+| `Purge.gs` | ✅ Done | `purgeOldTasksInternal()` (hard-deletes soft-deleted beyond retentionDays, enforces completedTaskMaxCount by removing oldest), `purgeOldActivitiesInternal()` (same logic), `purgeOldTasks/Activities()` (public trigger entry points) |
 
 ---
 
@@ -56,21 +50,19 @@
 
 | Item | Status | Notes |
 |---|---|---|
-| `Html/Styles.css` | ⏳ Pending | CSS custom properties (§8.2), layout (top bar, two panes, columns), cards, modals, buttons, toasts, empty states, responsive breakpoints, skeleton loading |
-| `Html/Index.html` | ⏳ Pending | Skeleton HTML: top bar, welcome bar, two pane containers, filter controls, modal shells, toast container. No data embedded. |
-| `Html/App.js` | ⏳ Pending | State management, rendering, `google.script.run` wrappers, drag-and-drop handlers, search filtering, modal management, polling loop, optimistic UI, error handling |
-
-**Dependency order:** Backend Phase 2 must be complete before frontend integration testing.
+| `Html/Styles.css` | ✅ Done | Full CSS (~604 lines): custom properties palette, top bar with user dropdown, welcome bar with counters, two-pane layout with hide/show toggles, task cards (compact with checkbox + visibility badge + assignee + comment preview), Kanban columns with horizontal scroll, activity cards, 4 modal types, form fields, comments section, button variants, toast system, empty states, skeleton loading shimmer, responsive breakpoints (≥1024 / 768–1023 / <768), error banner, scrollbar styling |
+| `Html/Index.html` | ✅ Done | Skeleton HTML (no embedded data): top bar with tabs + user avatar/dropdown, welcome bar, tasks pane + activities pane with search/toggle/add/filters, 5 modal shells (task detail, activity detail, new task, new activity, settings, admin), toast container, boot script calling `getInitialData()` |
+| `Html/App.js` | ✅ Done | Complete client SPA (~920 lines): `onInit()`, `renderAll()` (`renderTasks`, `renderKanban`, `renderWelcome`), task detail modal (change tracking + visibility guard), activity detail modal (inline comment edit/add/delete with edit/delete buttons), 3 settings tabs (profile, notifications, import/export), admin panel (admin list, config editor, user deletion, snapshot import), API wrappers for all 25+ server methods, HTML5 Drag & Drop + touch fallback with long-press, optimistic task complete/uncomplete, 409 conflict recovery (re-fetch + re-open modal), debounced search (200ms), polling loop (fast-path caching, 3-failure detection), keyboard shortcuts (Ctrl+N, Ctrl+Shift+N, /, Escape), toast system (stacked, max 3, auto-dismiss), escapeHtml() XSS prevention |
 
 ---
 
-## Phase 4: Integration & Testing
+## Phase 4: Testing & Documentation
 
 | Item | Status | Notes |
 |---|---|---|
-| `Tests.gs` | ⏳ Pending | Unit tests for all server functions. Run manually from GAS editor. |
-| End-to-end manual test | ⏳ Pending | Open web app, verify skeleton + data load, create tasks/activities, drag cards, edit comments, test admin operations, test settings, verify polling |
-| Deployment checklist | ⏳ Pending | Follow steps in Spec.md §15 |
+| `Tests.gs` | ✅ Done | 26 unit tests: 3 database, 4 users, 8 tasks, 6 activities, 2 purge, 2 config, 2 notifications. `testAll()` runner with pass/fail logging. |
+| `README.md` | ✅ Done | Full setup & deployment instructions, config reference, GAS limitations table, data model overview, key design decisions, test instructions |
+| Spec.md | ✅ Done | 2190-line complete specification (pre-existing) |
 
 ---
 
